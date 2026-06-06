@@ -14,10 +14,4 @@ Since this project is not open-source for personal use, please follow this stric
 4. **Test Locally:** Ensure your changes do not break the existing Django app.
 5. **Submit a Pull Request:** Open a PR from your fork back to this main repository. 
 
-## What We Need Help With
-* UI/UX improvements for mobile devices
-* Optimizing the PostgreSQL database queries
-* Fixing any bugs in the dynamic time expiration logic
-* Adding new chart visualizations to the Teacher Dashboard
-
 Please open an **Issue** to discuss a major feature before you start writing code for it,
