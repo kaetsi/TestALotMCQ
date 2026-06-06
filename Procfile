@@ -1,1 +1,1 @@
-web: python manage.py migrate && gunicorn quiz_project.wsgi --log-file -
+web: python manage.py makemigrations && python manage.py migrate && gunicorn config.wsgi --log-file -
