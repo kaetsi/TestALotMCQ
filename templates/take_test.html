@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Exam Sheet: {{ batch.exam_name }}</h2>
+
+{% if results %}
+    <div class="card" style="border-left-color: #28a745;">
+        <h3>Performance Summary Score: {{ score }} / {{ questions|length }}</h3>
+        <p><strong>Student ID Reference:</strong> {{ student_id }}</p>
+        <p>Review your answers below.</p>
+    </div>
+{% endif %}
+
+<form method="POST">
+    {% csrf_token %}
+    
+    {% if not results %}
+        <label><strong>Enter Student ID to Begin:</strong></label>
+        <input type="text" name="student_id" placeholder="e.g. ST-4592" required>
+    {% else %}
+        <input type="hidden" name="student_id" value="{{ student_id }}">
+    {% endif %}
+    
+    <div class="question-columns">
+        {% for q in questions %}
+        <div class="card" style="border-left-color: {% if results %}{% if q.correct_answer == request.POST|default:'' %}#28a745{% else %}#dc3545{% endif %}{% else %}#0066cc{% endif %};">
+            <p><strong>Q. {{ forloop.counter }}: {{ q.question_text }}</strong></p>
+            
+            <label><input type="radio" name="question_{{ q.id }}" value="{{ q.option_1 }}" {% if not results %}required{% endif %}> {{ q.option_1 }}</label><br>
+            <label><input type="radio" name="question_{{ q.id }}" value="{{ q.option_2 }}"> {{ q.option_2 }}</label><br>
+            <label><input type="radio" name="question_{{ q.id }}" value="{{ q.option_3 }}"> {{ q.option_3 }}</label><br>
+            <label><input type="radio" name="question_{{ q.id }}" value="{{ q.option_4 }}"> {{ q.option_4 }}</label><br>
+            
+            {% if results %}
+                {% for res in results %}
+                    {% if res.question.id == q.id %}
+                        <p style="margin-top: 10px;">Your Pick: <span class="{% if res.is_correct %}correct{% else %}wrong{% endif %}">{{ res.selected|default:"None" }}</span></p>
+                        {% if not res.is_correct %}
+                            <p class="correct" style="margin-top: 5px;">Target Baseline Key: {{ q.correct_answer }}</p>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <div style="margin-top: 20px;">
+        {% if not results %}
+            <button type="submit" class="btn">Verify and Submit Assessment</button>
+        {% else %}
+            <a href="{% url 'take_test' batch.id %}" class="btn">Clear Sheet and Retry Instance</a>
+        {% endif %}
+    </div>
+</form>
+{% endblock %}

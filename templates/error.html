@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Access Denied</h2>
+<div class="card" style="border-left-color: #dc3545;">
+    <p>{{ message }}</p>
+</div>
+<a href="{% url 'upload_exam' %}" class="btn">Return to Dashboard</a>
+{% endblock %}

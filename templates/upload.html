@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Create New Test Batch - TestALotMCQ</h2>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label>Exam Name:</label>
+    {{ form.exam_name }}
+    
+    <label>Expiration Window (Hours):</label>
+    {{ form.duration_hours }}
+    
+    <label>Upload TSV File:</label>
+    {{ form.tsv_file }}
+    
+    <button type="submit" class="btn btn-alt" style="margin-top: 10px;">Generate Secure Exam Portal</button>
+</form>
+{% endblock %}

@@ -4,6 +4,7 @@ from django.utils import timezone
 from datetime import timedelta
 from .models import TestBatch, Question, StudentAttempt
 from .forms import ExamUploadForm
+from django.http import HttpResponse
 
 def upload_exam(request):
     if request.method == 'POST':
@@ -77,3 +78,31 @@ def take_test(request, pk):
         'score': score,
         'student_id': student_id
     })
+
+def dashboard_view(request, pk):
+    batch = get_object_or_404(TestBatch, pk=pk)
+    attempts = StudentAttempt.objects.filter(batch=batch).order_by('-attempted_at')
+    total_questions = Question.objects.filter(batch=batch).count()
+
+    return render(request, 'dashboard.html', {
+        'batch': batch,
+        'attempts': attempts,
+        'total_questions': total_questions
+    })
+
+def download_csv(request, pk):
+    batch = get_object_or_404(TestBatch, pk=pk)
+    
+    if not batch.is_expired():
+        return render(request, 'error.html', {'message': 'Cannot download CSV until the exam expires.'})
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="{batch.exam_name}_grades.csv"'
+    
+    writer = csv.writer(response)
+    writer.writerow(['Student ID', 'Score', 'Timestamp'])
+    
+    for att in StudentAttempt.objects.filter(batch=batch):
+        writer.writerow([att.student_id, att.score, att.attempted_at])
+        
+    return response

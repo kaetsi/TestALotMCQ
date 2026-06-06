@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Portal Created Successfully! 🎉</h2>
+
+<div class="card" style="border-left-color: #28a745;">
+    <h3>Exam: {{ batch.exam_name }}</h3>
+    <p>Your secure link is active and will expire on: <strong>{{ batch.expires_at }} UTC</strong></p>
+    <p>Share this link with your students:</p>
+    <input type="text" value="http://{{ request.get_host }}/exam/{{ batch.id }}/" readonly onclick="this.select();">
+</div>
+
+<div class="card" style="border-left-color: #ffc107;">
+    <h3>Teacher Dashboard Link (Keep Private)</h3>
+    <p>Save this link to view student scores and download the CSV later:</p>
+    <input type="text" value="http://{{ request.get_host }}/dashboard/{{ batch.id }}/" readonly onclick="this.select();">
+</div>
+
+<a href="{% url 'upload_exam' %}" class="btn" style="margin-top: 10px;">Create Another Exam</a>
+{% endblock %}
